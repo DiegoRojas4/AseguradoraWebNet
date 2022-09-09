@@ -87,5 +87,26 @@ namespace API.Cotizador.Net.Controllers
                 return Task.FromResult<Catalogos<List<CatSubMarca>>>(listSubMarca);
             }
         }
+
+
+        [Route("api/ConsultarModelos")]
+        [Produces("application/json")]
+        [HttpPost]
+        public Task<Catalogos<List<CatModeloAnio>>> ConsultarAnioAutos(CatalogoRequest peticion)
+        {
+            Catalogos<List<CatModeloAnio>> listModelos = new Catalogos<List<CatModeloAnio>>();
+            listModelos.Catalogo = new List<CatModeloAnio>();
+            try
+            {
+                return implementacion.ConsultarAnioAutos(peticion);
+            }
+            catch (Exception ex)
+            {
+                listModelos.Codigo = 0;
+                listModelos.Mensaje = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+
+                return Task.FromResult<Catalogos<List<CatModeloAnio>>>(listModelos);
+            }
+        }
     }
 }

@@ -23,12 +23,14 @@ namespace Cotizador.Datos.CotizadorContext
         {
             modelBuilder.Entity<Marca>().HasKey(x => x.MarcaId);
             modelBuilder.Entity<SubMarca>().HasKey(x => x.SubMarcaId);
+            modelBuilder.Entity<ModelosAutos>().HasKey(x => x.ModeloId);
             base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Repositoriotxt> RepositorioNotas { get; set; }
         public DbSet<Marca> MarcaAutos { get; set; }
         public DbSet<SubMarca> SubMarcaAutos { get; set; }
+        public DbSet<ModelosAutos> VersionAuto { get; set; }
 
 
     }

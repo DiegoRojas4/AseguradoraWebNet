@@ -13,5 +13,6 @@ namespace Cotizador.Repositorio.IRepositorio
         public Task<Catalogos<List<Repositoriotxt>>> AgregarRegistroMarca();
         public Task<Catalogos<List<CatAgenciasAutos>>> ConsultarMarcasdeAutos();
         public Task<Catalogos<List<CatSubMarca>>> ConsultarSubMarca(CatalogoRequest peticion);
+        public Task<Catalogos<List<CatModeloAnio>>> ConsultarAnioAutos(CatalogoRequest peticion);
     }
 }

@@ -167,6 +167,25 @@ namespace Cotizador.Negocio
             }
         }
 
+        public List<CatModeloAnio> ConsultarAnioAutos(CatalogoRequest request)
+        {
+            List<CatModeloAnio> listModelos = new List<CatModeloAnio>();
+            try
+            {
+                cotizadorContext = new CotizadorDataContext(appsettings.Value.ConnectionStrings["CotizadorBD"]);
+
+                List<ModelosAutos> resultConsulta = cotizadorContext.VersionAuto.Where(x => x.SubMarcaId == request.SubMarcaId).ToList();
+
+                listModelos = mapper.Map<List<ModelosAutos>, List<CatModeloAnio>>(resultConsulta);
+
+                return listModelos;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
     }
 }

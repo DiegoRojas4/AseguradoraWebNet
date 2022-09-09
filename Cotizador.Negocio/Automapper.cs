@@ -34,6 +34,18 @@ namespace Cotizador.Negocio
                 .ForMember(x => x.SubMarcaId, x => x.MapFrom(y => y.SubMarcaId))
                 .ForMember(x => x.Nombre, x => x.MapFrom(y => y.Nombre));
 
+                cfg.CreateMap<ModelosAutos, CatModeloAnio>()
+                .ForMember(x => x.ModeloId, x => x.MapFrom(y => y.ModeloId))
+                .ForMember(x => x.AgenciaId, x => x.MapFrom(y => y.MarcaId))
+                .ForMember(x => x.SubMarcaId, x => x.MapFrom(y => y.SubMarcaId))
+                .ForMember(x => x.Anio, x => x.MapFrom(y => y.Modelo));
+
+                cfg.CreateMap<CatModeloAnio, ModelosAutos>()
+                .ForMember(x => x.ModeloId, x => x.MapFrom(y => y.ModeloId))
+                .ForMember(x => x.MarcaId, x => x.MapFrom(y => y.AgenciaId))
+                .ForMember(x => x.SubMarcaId, x => x.MapFrom(y => y.SubMarcaId))
+                .ForMember(x => x.Modelo, x => x.MapFrom(y => y.Anio));
+
             });
         }
     }

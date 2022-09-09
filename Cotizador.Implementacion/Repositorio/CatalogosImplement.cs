@@ -80,8 +80,29 @@ namespace Cotizador.Repositorio.Repositorio
             {
                 throw ex;
             }
-
+            
             return Task.FromResult<Catalogos<List<CatSubMarca>>>(listSubMarcass);
+        }
+
+        public Task<Catalogos<List<CatModeloAnio>>> ConsultarAnioAutos(CatalogoRequest peticion)
+        {
+            Catalogos<List<CatModeloAnio>> listModelos = new Catalogos<List<CatModeloAnio>>();
+            listModelos.Catalogo = new List<CatModeloAnio>();
+
+            try
+            {
+                CatalogosNegocio negocio = new CatalogosNegocio(appsettings);
+                listModelos.Catalogo = negocio.ConsultarAnioAutos(peticion);
+
+                listModelos.Codigo = 1;
+                listModelos.Mensaje = listModelos.Catalogo.Count() > 0 ? "Consulta éxitosa" : string.Concat("Modelo no encontrado con el IdSubMarca ", peticion.SubMarcaId.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return Task.FromResult<Catalogos<List<CatModeloAnio>>>(listModelos);
         }
     }
 }
