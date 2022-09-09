@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Cotizador.Modelos;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,9 +21,13 @@ namespace Cotizador.Datos.CotizadorContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Marca>().HasKey(x => x.MarcaId);
             base.OnModelCreating(modelBuilder);
         }
 
+        public DbSet<Repositoriotxt> RepositorioNotas { get; set; }
+
+        public DbSet<Marca> MarcaAutos { get; set; }
 
 
 

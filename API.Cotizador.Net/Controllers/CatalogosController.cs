@@ -1,4 +1,5 @@
 ﻿using Cotizador.Entidades;
+using Cotizador.Entidades.Catalogos;
 using Cotizador.Modelos;
 using Cotizador.Repositorio.Repositorio;
 using Microsoft.AspNetCore.Http;
@@ -24,23 +25,47 @@ namespace API.Cotizador.Net.Controllers
             implementacion = new CatalogosImplement(appsettings);
         }
 
-        [Route("cotizador/CatalogoMarca")]
+        [Route("api/AgregarMarcas")]
+        [Produces("application/json")]
         [HttpGet]
-        public async Task<Catalogos<List<CatMarca>>> CatalogoMarca() //Servicio de pruebas
+        public async Task<Catalogos<List<Repositoriotxt>>> AgregarMarcas()
         {
+            Catalogos<List<Repositoriotxt>> catalogoResult = new Catalogos<List<Repositoriotxt>>();
+
             try
             {
-                var test = await implementacion.CatalogoMarca();
+                catalogoResult = await implementacion.AgregarRegistroMarca();
 
-                return test;
+                return catalogoResult;
             }
             catch (Exception ex)
             {
+                catalogoResult.Catalogo = new List<Repositoriotxt>();
+                catalogoResult.Codigo = 0;
+                catalogoResult.Mensaje = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
 
-                throw;
+                return catalogoResult;
             }
         }
 
+        [Route("api/ConsultarMarcas")]
+        [Produces("application/json")]
+        [HttpGet]
+        public Task<Catalogos<List<CatAgenciasAutos>>> ConsultarMarcasdeAutos()
+        {
+            Catalogos<List<CatAgenciasAutos>> listAgencias = new Catalogos<List<CatAgenciasAutos>>();
+            listAgencias.Catalogo = new List<CatAgenciasAutos>();
+            try
+            {
+                return implementacion.ConsultarMarcasdeAutos();
+            }
+            catch (Exception ex)
+            {
+                listAgencias.Codigo = 0;
+                listAgencias.Mensaje = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
 
+                return Task.FromResult<Catalogos<List<CatAgenciasAutos>>>(listAgencias);
+            }
+        }
     }
 }

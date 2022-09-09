@@ -1,5 +1,7 @@
-﻿using Cotizador.Datos.CotizadorContext;
+﻿using AutoMapper;
+using Cotizador.Datos.CotizadorContext;
 using Cotizador.Entidades;
+using Cotizador.Entidades.Catalogos;
 using Cotizador.Herramientas;
 using Cotizador.Modelos;
 using Microsoft.Extensions.Options;
@@ -14,21 +16,26 @@ namespace Cotizador.Negocio
     public class CatalogosNegocio
     {
         private IOptions<AppSettings> appsettings;
+        private CotizadorDataContext cotizadorContext = null;
+
+        IMapper mapper = new Automapper().configuracion.CreateMapper();
 
         public CatalogosNegocio(IOptions<AppSettings> _appsettings)
         {
             appsettings = _appsettings;
         }
 
-        public async Task<Catalogos<List<CatMarca>>> ConsultarCatalogoMarca()
+        public async Task<Catalogos<List<Repositoriotxt>>> AgregarCatalogoMarca()
         {
-            Catalogos<List<CatMarca>> resultado = new Catalogos<List<CatMarca>>();
-            resultado.Catalogo = new List<CatMarca>();
+            Catalogos<List<Repositoriotxt>> resultado = new Catalogos<List<Repositoriotxt>>();
+            resultado.Catalogo = new List<Repositoriotxt>();
             try
             {
-                var tempList = new List<CatMarca>();
+                var tempList = new List<Repositoriotxt>();
 
-                ClienteRest _clienteRest = new ClienteRest("https://api-test.aarco.com.mx/examen-insumos/ListaDeAutos.txt");
+                string ApiEndPoint = appsettings.Value.Servicios["ApiMarcas"];
+
+                ClienteRest _clienteRest = new ClienteRest(ApiEndPoint);
 
                 Stream responsetxt = await _clienteRest.SimpleGetStreamer();
 
@@ -39,7 +46,7 @@ namespace Cotizador.Negocio
                     {
                         string[] separacion = Line.Split("\t");
 
-                        CatMarca marca = new CatMarca();
+                        Repositoriotxt marca = new Repositoriotxt();
 
                         marca.Marca = separacion[0].ToString();
                         marca.Submarca = separacion[1].ToString();
@@ -54,28 +61,34 @@ namespace Cotizador.Negocio
                 if (tempList.Count() > 0)
                 {
                     resultado.Catalogo = RemoverItems(tempList);
-                }
+                    bool result = await InsertarDatosNuevosMarca(resultado.Catalogo);
 
-                resultado.Codigo = 1;
-                resultado.Mensaje = "Ejecución exitosa";
+                    resultado.Codigo = result ? 1 : 0;
+                    resultado.Mensaje = result  ? "Datos insertados correctamente" : "No se pudo realizar la inserción de datos";
+                }
             }
             catch (Exception ex)
             {
+                string logger = string.Empty;
+
                 resultado.Codigo = 0;
-                resultado.Mensaje = ex.Message;
+                logger = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    logger = ex.InnerException.Message;
+                }
+                resultado.Mensaje = logger;
             }
 
             return resultado;
         }
-
-
-        private List<CatMarca> RemoverItems(List<CatMarca> listaOriginal)
+        private List<Repositoriotxt> RemoverItems(List<Repositoriotxt> listaOriginal)
         {
             try
             {
-                var listatemporal = new List<CatMarca>(listaOriginal);
+                var listatemporal = new List<Repositoriotxt>(listaOriginal);
 
-                var resultLista = new List<CatMarca>();
+                var resultLista = new List<Repositoriotxt>();
 
                 if (listatemporal.Count() > 0)
                 {
@@ -94,22 +107,47 @@ namespace Cotizador.Negocio
                 throw ex;
             }
         }
-
-        private void InsertarDatosNuevosMarca(List<CatMarca> listaOriginal)
+        private async Task<bool> InsertarDatosNuevosMarca(List<Repositoriotxt> listaOriginal)
         {
+            bool ejecucionExitosa = false;
             try
             {
-                CotizadorDataContext cotizadorContext = new CotizadorDataContext(appsettings.Value.ConnectionStrings["CotizadorBD"]);
+                cotizadorContext = new CotizadorDataContext(appsettings.Value.ConnectionStrings["CotizadorBD"]);
 
+                await cotizadorContext.RepositorioNotas.AddRangeAsync(listaOriginal);
+                var resultado = await cotizadorContext.SaveChangesAsync();
 
-
+                ejecucionExitosa = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                ejecucionExitosa = false;
+                throw ex;
             }
+
+            return ejecucionExitosa;
         }
+
+
+        public List<CatAgenciasAutos> ConsultarMarcasdeAutos()
+        {
+            List<CatAgenciasAutos> listmarcas = new List<CatAgenciasAutos>();
+            try
+            {
+                cotizadorContext = new CotizadorDataContext(appsettings.Value.ConnectionStrings["CotizadorBD"]);
+
+                List<Marca> resulConsulta = cotizadorContext.MarcaAutos.ToList();
+
+                listmarcas = mapper.Map<List<Marca>, List<CatAgenciasAutos>>(resulConsulta);
+
+                return listmarcas;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        } 
+
 
     }
 }

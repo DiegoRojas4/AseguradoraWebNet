@@ -1,4 +1,5 @@
 ﻿using Cotizador.Entidades;
+using Cotizador.Entidades.Catalogos;
 using Cotizador.Modelos;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ namespace Cotizador.Repositorio.IRepositorio
 {
     public interface ICatalogos
     {
-        public Task<Catalogos<List<CatMarca>>> CatalogoMarca();
+        public Task<Catalogos<List<Repositoriotxt>>> AgregarRegistroMarca();
+
+        public Task<Catalogos<List<CatAgenciasAutos>>> ConsultarMarcasdeAutos();
     }
 }
