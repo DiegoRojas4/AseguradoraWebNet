@@ -104,5 +104,26 @@ namespace Cotizador.Repositorio.Repositorio
 
             return Task.FromResult<Catalogos<List<CatModeloAnio>>>(listModelos);
         }
+
+        public Task<Catalogos<List<CatDescripciones>>> ConsultarDescripciones(CatalogoRequest peticion)
+        {
+            Catalogos<List<CatDescripciones>> listdescripciones = new Catalogos<List<CatDescripciones>>();
+            listdescripciones.Catalogo = new List<CatDescripciones>();
+
+            try
+            {
+                CatalogosNegocio negocio = new CatalogosNegocio(appsettings);
+                listdescripciones.Catalogo = negocio.ConsultarDescripciones(peticion);
+
+                listdescripciones.Codigo = 1;
+                listdescripciones.Mensaje = listdescripciones.Catalogo.Count() > 0 ? "Consulta éxitosa" : string.Concat("Descripcione no encontrado con el IdSubMarca ", peticion.SubMarcaId.ToString(), " y IdModelo ", peticion.ModeloId.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return Task.FromResult<Catalogos<List<CatDescripciones>>>(listdescripciones);
+        }
     }
 }

@@ -24,6 +24,8 @@ namespace Cotizador.Datos.CotizadorContext
             modelBuilder.Entity<Marca>().HasKey(x => x.MarcaId);
             modelBuilder.Entity<SubMarca>().HasKey(x => x.SubMarcaId);
             modelBuilder.Entity<ModelosAutos>().HasKey(x => x.ModeloId);
+            modelBuilder.Entity<ModeloDescripcion>().HasNoKey();
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -31,6 +33,8 @@ namespace Cotizador.Datos.CotizadorContext
         public DbSet<Marca> MarcaAutos { get; set; }
         public DbSet<SubMarca> SubMarcaAutos { get; set; }
         public DbSet<ModelosAutos> VersionAuto { get; set; }
+
+        public DbSet<ModeloDescripcion> DescripcionAutos { get; set; }
 
 
     }

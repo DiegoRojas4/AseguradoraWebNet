@@ -186,6 +186,25 @@ namespace Cotizador.Negocio
             }
         }
 
+        public List<CatDescripciones> ConsultarDescripciones(CatalogoRequest request)
+        {
+            List<CatDescripciones> listDescripciones = new List<CatDescripciones>();
+            try
+            {
+                cotizadorContext = new CotizadorDataContext(appsettings.Value.ConnectionStrings["CotizadorBD"]);
+
+                List<ModeloDescripcion> resultConsulta = cotizadorContext.DescripcionAutos.Where(q => q.SubMarcaId == request.SubMarcaId && q.ModeloId == request.ModeloId).ToList();
+
+                listDescripciones = mapper.Map<List<ModeloDescripcion>, List<CatDescripciones>>(resultConsulta);
+
+                return listDescripciones;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
     }
 }
