@@ -22,13 +22,13 @@ namespace Cotizador.Datos.CotizadorContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Marca>().HasKey(x => x.MarcaId);
+            modelBuilder.Entity<SubMarca>().HasKey(x => x.SubMarcaId);
             base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Repositoriotxt> RepositorioNotas { get; set; }
-
         public DbSet<Marca> MarcaAutos { get; set; }
-
+        public DbSet<SubMarca> SubMarcaAutos { get; set; }
 
 
     }

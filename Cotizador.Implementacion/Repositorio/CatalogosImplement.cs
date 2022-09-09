@@ -62,5 +62,26 @@ namespace Cotizador.Repositorio.Repositorio
 
             return Task.FromResult<Catalogos<List<CatAgenciasAutos>>>(listAgencias);
         }
+
+        public Task<Catalogos<List<CatSubMarca>>> ConsultarSubMarca(CatalogoRequest peticion)
+        {
+            Catalogos<List<CatSubMarca>> listSubMarcass = new Catalogos<List<CatSubMarca>>();
+            listSubMarcass.Catalogo = new List<CatSubMarca>();
+
+            try
+            {
+                CatalogosNegocio negocio = new CatalogosNegocio(appsettings);
+                listSubMarcass.Catalogo = negocio.ConsultarSubMarca(peticion);
+
+                listSubMarcass.Codigo = 1;
+                listSubMarcass.Mensaje = listSubMarcass.Catalogo.Count() > 0 ? "Consulta éxitosa" : string.Concat("SubMarcas no encontradas con el IdMarca ", peticion.MarcaId.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return Task.FromResult<Catalogos<List<CatSubMarca>>>(listSubMarcass);
+        }
     }
 }

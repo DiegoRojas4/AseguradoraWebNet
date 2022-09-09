@@ -148,6 +148,25 @@ namespace Cotizador.Negocio
             }
         } 
 
+        public List<CatSubMarca> ConsultarSubMarca(CatalogoRequest requets)
+        {
+            List<CatSubMarca> listsubmarcas = new List<CatSubMarca>();
+            try
+            {
+                cotizadorContext = new CotizadorDataContext(appsettings.Value.ConnectionStrings["CotizadorBD"]);
+
+                List<SubMarca> resultConsulta = cotizadorContext.SubMarcaAutos.Where(x => x.MarcaId == requets.MarcaId).ToList();
+
+                listsubmarcas = mapper.Map<List<SubMarca>, List<CatSubMarca>>(resultConsulta);
+
+                return listsubmarcas;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
     }
 }
