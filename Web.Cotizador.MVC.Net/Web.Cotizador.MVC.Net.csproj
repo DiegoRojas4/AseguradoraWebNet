@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Web.Cotizador.Datos\Web.Cotizador.Datos.csproj" />
+  </ItemGroup>
+
 </Project>
